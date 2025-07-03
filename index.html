@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PMCS Assistant</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="header-icon">🚛</div>
+                <div class="header-icon">
+                    <img src="images/military-hat.png" alt="Military Vehicle" class="header-icon-img">
+                </div>
                 <div class="header-text">
                     <h1>PMCS Assistant</h1>
                     <p>TM 9-2320-280-10 | Preventive Maintenance Checks and Services</p>
@@ -25,7 +29,8 @@
         <div class="container">
             <div class="search-controls">
                 <div class="search-input-container">
-                    <input type="text" id="searchInput" placeholder="Describe the fault (e.g., 'engine won't start', 'oil leak', 'brakes spongy')...">
+                    <input type="text" id="searchInput"
+                        placeholder="Describe the fault (e.g., 'engine won't start', 'oil leak', 'AC blows warm air')...">
                     <span class="search-icon">🔍</span>
                 </div>
                 <select id="systemFilter">
@@ -49,6 +54,9 @@
                     <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
                 </select>
+                <button id="intervalInfoBtn" class="info-btn" title="Learn about PMCS intervals">
+                    ℹ️ PMCS Intervals
+                </button>
             </div>
         </div>
     </div>
@@ -59,7 +67,7 @@
             <div id="resultsContainer" class="results-container">
                 <!-- Items will be populated by JavaScript -->
             </div>
-            
+
             <div id="noResults" class="no-results" style="display: none;">
                 <div class="no-results-icon">⚠️</div>
                 <p>No items found matching your search criteria.</p>
@@ -101,6 +109,76 @@
         </div>
     </div>
 
+    <!-- PMCS Intervals Info Modal -->
+    <div id="intervalInfoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>PMCS Interval Guidelines</h3>
+                <span class="close-btn" id="closeIntervalModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="interval-info-content">
+                    <p class="intro-text">PMCS (Preventive Maintenance Checks and Services) involves checks at various
+                        intervals to ensure vehicle readiness and safety:</p>
+
+                    <div class="interval-item">
+                        <div class="interval-badge interval-before">Before</div>
+                        <div class="interval-description">
+                            <strong>Before Operation Checks</strong>
+                            <p>Required before using the vehicle. These checks identify potential safety hazards and
+                                mission-critical defects before operation begins.</p>
+                        </div>
+                    </div>
+
+                    <div class="interval-item">
+                        <div class="interval-badge interval-during">During</div>
+                        <div class="interval-description">
+                            <strong>During Operation Checks</strong>
+                            <p>Performed while operating the vehicle. Monitor gauges, listen for unusual sounds, and
+                                check vehicle performance during use.</p>
+                        </div>
+                    </div>
+
+                    <div class="interval-item">
+                        <div class="interval-badge interval-after">After</div>
+                        <div class="interval-description">
+                            <strong>After Operation Checks</strong>
+                            <p>Conducted after vehicle operation. Check for leaks, damage, or issues that may have
+                                developed during use and prepare for next operation.</p>
+                        </div>
+                    </div>
+
+                    <div class="interval-item">
+                        <div class="interval-badge interval-weekly">Weekly</div>
+                        <div class="interval-description">
+                            <strong>Weekly Checks</strong>
+                            <p>Performed once every 7 days. More detailed inspections of systems and components to
+                                prevent breakdowns and ensure continued reliability.</p>
+                        </div>
+                    </div>
+
+                    <div class="interval-item">
+                        <div class="interval-badge interval-monthly">Monthly</div>
+                        <div class="interval-description">
+                            <strong>Monthly Checks</strong>
+                            <p>Conducted once every 30 days. Comprehensive inspections and maintenance tasks to maintain
+                                long-term vehicle health and mission readiness.</p>
+                        </div>
+                    </div>
+
+                    <div class="note-section">
+                        <p><strong>Note:</strong> Depending on specific equipment and technical manuals (TM), there may
+                            also be semi-annual, annual, or bi-annual checks. Always refer to the applicable TM for
+                            complete requirements.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeIntervalModalBtn" class="btn btn-primary">Got It!</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -110,4 +188,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

@@ -2555,11 +2555,11 @@ class MobileScrollBehavior {
             const upwardScrollAmount = Math.abs(scrollDifference);
 
             // Show immediately if user scrolled up significantly (25px or more)
-            if (upwardScrollAmount >= 25) {
+            if (upwardScrollAmount >= 50) {
                 this.showHeader();
             }
             // Or show after accumulated smaller scrolls
-            else if (upwardScrollAmount >= 10) {
+            else if (upwardScrollAmount >= 25) {
                 // Add a small delay for smaller scroll amounts
                 this.showHeaderWithDelay();
             }

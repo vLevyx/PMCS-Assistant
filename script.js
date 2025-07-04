@@ -1825,10 +1825,9 @@ class PMCSApp {
     // ========================================
 
     filterItems() {
-        const searchTerm = this.searchInput?.value.toLowerCase() || '';
+        const searchTerm = this.searchInput?.value || '';
         const selectedInterval = this.intervalFilter?.value || 'all';
         const selectedSystem = this.systemFilter?.value || 'all';
-        const selectedVehicle = this.vehicleFilter?.value || 'all';
 
         const filteredData = pmcsData.filter(item => {
             // Enhanced search across multiple fields
@@ -1837,14 +1836,11 @@ class PMCSApp {
                 item.interval.toLowerCase() === selectedInterval;
             const matchesSystem = selectedSystem === 'all' ||
                 (item.system && item.system.toLowerCase() === selectedSystem);
-            const matchesVehicle = selectedVehicle === 'all' ||
-                this.itemMatchesVehicle(item, selectedVehicle);
 
-            return matchesSearch && matchesInterval && matchesSystem && matchesVehicle;
+            return matchesSearch && matchesInterval && matchesSystem;
         });
 
         this.displayItems(filteredData);
-        this.updateVehicleInfo(selectedVehicle, filteredData.length);
     }
 
     itemMatchesSearch(item, searchTerm) {
@@ -1864,23 +1860,95 @@ class PMCSApp {
             searchFields.push(...item.commonFaults);
         }
 
-        // Normalize search term and fields for better matching
-        const normalizedSearchTerm = this.normalizeSearchText(searchTerm);
+        // Create multiple search variants for better matching
+        const searchVariants = this.createSearchVariants(searchTerm);
 
         return searchFields.some(field => {
-            const normalizedField = this.normalizeSearchText(field);
-            return normalizedField.includes(normalizedSearchTerm);
+            const fieldVariants = this.createSearchVariants(field);
+
+            // Check if any search variant matches any field variant
+            return searchVariants.some(searchVar =>
+                fieldVariants.some(fieldVar => fieldVar.includes(searchVar))
+            );
         });
+    }
+
+    // Helper method to create multiple search variants for better matching
+    createSearchVariants(text) {
+        if (!text) return [''];
+
+        const variants = new Set();
+        const original = text.toLowerCase().trim();
+
+        // Add original text
+        variants.add(original);
+
+        // Add normalized text (no punctuation, normalized whitespace)
+        const normalized = this.normalizeSearchText(original);
+        variants.add(normalized);
+
+        // Add text with expanded contractions
+        const expanded = this.expandContractions(original);
+        variants.add(expanded);
+
+        // Add normalized version of expanded text
+        const normalizedExpanded = this.normalizeSearchText(expanded);
+        variants.add(normalizedExpanded);
+
+        // Add text with apostrophes replaced by spaces
+        const apostropheSpaced = original.replace(/[''`]/g, ' ').replace(/\s+/g, ' ').trim();
+        variants.add(apostropheSpaced);
+
+        // Remove empty variants
+        return Array.from(variants).filter(v => v.length > 0);
     }
 
     // Helper method to normalize text for searching
     normalizeSearchText(text) {
+        if (!text) return '';
+
         return text
             .toLowerCase()
-            .replace(/'/g, '')  // Remove apostrophes
-            .replace(/['']/g, '')  // Remove curly apostrophes
+            .replace(/[''`]/g, '')  // Remove apostrophes, curly apostrophes, and backticks
+            .replace(/[^\w\s]/g, ' ')  // Replace all other punctuation with spaces
             .replace(/\s+/g, ' ')  // Normalize whitespace
             .trim();
+    }
+
+    // Helper method to expand common contractions
+    expandContractions(text) {
+        if (!text) return '';
+
+        const contractions = {
+            "won't": "will not",
+            "can't": "cannot",
+            "don't": "do not",
+            "doesn't": "does not",
+            "didn't": "did not",
+            "isn't": "is not",
+            "aren't": "are not",
+            "wasn't": "was not",
+            "weren't": "were not",
+            "haven't": "have not",
+            "hasn't": "has not",
+            "hadn't": "had not",
+            "wouldn't": "would not",
+            "couldn't": "could not",
+            "shouldn't": "should not",
+            "mustn't": "must not",
+            "needn't": "need not",
+            "it's": "it is",
+        };
+
+        let expanded = text.toLowerCase();
+
+        // Replace contractions - handle both regular and curly apostrophes
+        for (const [contraction, expansion] of Object.entries(contractions)) {
+            const regex = new RegExp(`\\b${contraction.replace(/'/g, "[''`]")}\\b`, 'gi');
+            expanded = expanded.replace(regex, expansion);
+        }
+
+        return expanded;
     }
 
     // ========================================
@@ -2350,6 +2418,301 @@ Not Fully Mission Capable If: ${item.notFullyMissionCapable}`;
         return items ? items.length : 0;
     }
 }
+
+// Mobile Scroll Behavior for Search Header
+class MobileScrollBehavior {
+    constructor() {
+        this.searchSection = null;
+        this.lastScrollY = 0;
+        this.scrollDirection = 'up';
+        this.scrollThreshold = 5; // More sensitive scroll detection
+        this.hideTimeout = null;
+        this.isMobile = false;
+        this.isSticky = false; // Track if search section is at top
+        
+        this.init();
+    }
+
+    init() {
+        // Check if we're on mobile
+        this.checkMobile();
+        
+        // Get the search section element
+        this.searchSection = document.querySelector('.search-section');
+        
+        if (!this.searchSection) {
+            console.warn('Search section not found for mobile scroll behavior');
+            return;
+        }
+
+        // Set up event listeners
+        this.setupEventListeners();
+        
+        // Initial setup
+        this.lastScrollY = window.scrollY;
+    }
+
+    checkMobile() {
+        this.isMobile = window.innerWidth <= 767;
+    }
+
+    setupEventListeners() {
+        // Throttled scroll listener for better performance
+        let ticking = false;
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking && this.isMobile) {
+                requestAnimationFrame(() => {
+                    this.handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            this.checkMobile();
+            
+            // Reset classes if switching to desktop
+            if (!this.isMobile && this.searchSection) {
+                this.resetToNormal();
+            }
+        }, { passive: true });
+
+        // Handle touch events for better mobile experience
+        let touchStartY = 0;
+        let touchStartTime = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            if (this.isMobile) {
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (this.isMobile) {
+                const touchY = e.touches[0].clientY;
+                const deltaY = touchStartY - touchY;
+                const deltaTime = Date.now() - touchStartTime;
+                
+                // If significant touch movement with reasonable speed
+                if (Math.abs(deltaY) > 10 && deltaTime > 50) {
+                    this.scrollDirection = deltaY > 0 ? 'down' : 'up';
+                }
+            }
+        }, { passive: true });
+    }
+
+    handleScroll() {
+        if (!this.isMobile || !this.searchSection) return;
+
+        const currentScrollY = window.scrollY;
+        const scrollDifference = currentScrollY - this.lastScrollY;
+
+        // Check if search section has reached the top (sticky position)
+        const searchRect = this.searchSection.getBoundingClientRect();
+        const isAtTop = searchRect.top <= 0;
+
+        // Update sticky state
+        if (isAtTop && !this.isSticky) {
+            this.isSticky = true;
+            this.searchSection.classList.add('sticky-active');
+        } else if (!isAtTop && this.isSticky) {
+            this.isSticky = false;
+            this.searchSection.classList.remove('sticky-active');
+            this.resetToNormal(); // Remove any scroll states when not sticky
+        }
+
+        // Determine scroll direction with threshold
+        if (Math.abs(scrollDifference) > this.scrollThreshold) {
+            this.scrollDirection = scrollDifference > 0 ? 'down' : 'up';
+        }
+
+        // Only apply hide/show behavior when sticky
+        if (this.isSticky) {
+            this.updateHeaderVisibility(currentScrollY);
+        }
+
+        this.lastScrollY = currentScrollY;
+    }
+
+    updateHeaderVisibility(currentScrollY) {
+        // Only hide/show when we're in sticky mode and have scrolled a bit
+        if (!this.isSticky || currentScrollY < 10) {
+            return;
+        }
+
+        // Hide header when scrolling down
+        if (this.scrollDirection === 'down') {
+            this.hideHeader();
+        }
+        // Show header when scrolling up
+        else if (this.scrollDirection === 'up') {
+            this.showHeader();
+        }
+    }
+
+    showHeader() {
+        if (!this.searchSection || !this.isSticky) return;
+        
+        // Clear any pending hide timeout
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+            this.hideTimeout = null;
+        }
+
+        this.searchSection.classList.remove('scroll-hidden');
+        this.searchSection.classList.add('scroll-visible');
+    }
+
+    hideHeader() {
+        if (!this.searchSection || !this.isSticky) return;
+
+        // Add a small delay before hiding to prevent flickering
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+        }
+
+        this.hideTimeout = setTimeout(() => {
+            this.searchSection.classList.remove('scroll-visible');
+            this.searchSection.classList.add('scroll-hidden');
+        }, 150); // Slightly longer delay for smoother feel
+    }
+
+    resetToNormal() {
+        if (!this.searchSection) return;
+        
+        // Clear any pending hide timeout
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+            this.hideTimeout = null;
+        }
+
+        // Remove all scroll-related classes
+        this.searchSection.classList.remove('scroll-hidden', 'scroll-visible', 'sticky-active');
+        this.isSticky = false;
+    }
+
+    // Public method to force show header (useful for search focus, etc.)
+    forceShowHeader() {
+        if (this.isMobile && this.isSticky) {
+            this.showHeader();
+        }
+    }
+
+    // Public method to get current mobile state
+    getIsMobile() {
+        return this.isMobile;
+    }
+}
+
+// Initialize mobile scroll behavior when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Create global instance
+    window.mobileScrollBehavior = new MobileScrollBehavior();
+    
+    // Optional: Show header when search input is focused
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('focus', () => {
+            if (window.mobileScrollBehavior) {
+                window.mobileScrollBehavior.forceShowHeader();
+            }
+        });
+    }
+});
+
+// Integration with existing PMCS app
+if (typeof PMCSApp !== 'undefined') {
+    // Extend the existing PMCSApp class to include mobile scroll behavior
+    const originalInit = PMCSApp.prototype.init;
+    
+    PMCSApp.prototype.init = function() {
+        // Call original init
+        originalInit.call(this);
+        
+        // Initialize mobile scroll behavior
+        this.mobileScrollBehavior = new MobileScrollBehavior();
+        
+        // Show header when performing searches
+        const originalFilterItems = this.filterItems;
+        this.filterItems = function() {
+            originalFilterItems.call(this);
+            
+            // Show header after filtering on mobile
+            if (this.mobileScrollBehavior && this.mobileScrollBehavior.getIsMobile()) {
+                this.mobileScrollBehavior.forceShowHeader();
+            }
+        };
+    };
+}
+
+// Add scroll indicator for better UX (optional)
+class ScrollIndicator {
+    constructor() {
+        this.indicator = null;
+        this.isVisible = false;
+        this.init();
+    }
+
+    init() {
+        // Only create indicator on mobile
+        if (window.innerWidth <= 767) {
+            this.createIndicator();
+            this.setupScrollListener();
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 767 && !this.indicator) {
+                this.createIndicator();
+                this.setupScrollListener();
+            } else if (window.innerWidth > 767 && this.indicator) {
+                this.removeIndicator();
+            }
+        });
+    }
+
+    createIndicator() {
+        // Create a subtle scroll progress indicator
+        this.indicator = document.createElement('div');
+        this.indicator.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2d5a3d, #4caf50);
+            z-index: 101;
+            width: 0%;
+            transition: width 0.1s ease;
+            pointer-events: none;
+        `;
+        document.body.appendChild(this.indicator);
+    }
+
+    removeIndicator() {
+        if (this.indicator) {
+            document.body.removeChild(this.indicator);
+            this.indicator = null;
+        }
+    }
+
+    setupScrollListener() {
+        if (!this.indicator) return;
+
+        window.addEventListener('scroll', () => {
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            this.indicator.style.width = Math.min(scrollPercent, 100) + '%';
+        }, { passive: true });
+    }
+}
+
+// Initialize scroll indicator
+document.addEventListener('DOMContentLoaded', () => {
+    new ScrollIndicator();
+});
 
 // ========================================
 // INITIALIZATION

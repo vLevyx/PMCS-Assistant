@@ -25,7 +25,7 @@ body {
     background: linear-gradient(135deg, #1e4d2b, #2d5a3d);
     color: white;
     padding: 20px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -37,13 +37,13 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
+    background-image:
         /* Diagonal grid pattern */
-        linear-gradient(45deg, rgba(255,255,255,0.05) 1px, transparent 1px),
-        linear-gradient(-45deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(45deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         /* Larger grid overlay */
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 30px 30px, 30px 30px, 60px 60px, 60px 60px;
     background-position: 0 0, 0 0, 0 0, 0 0;
     animation: gridMove 20s linear infinite;
@@ -74,6 +74,7 @@ body {
     0% {
         transform: translate(0, 0);
     }
+
     100% {
         transform: translate(30px, 30px);
     }
@@ -102,13 +103,26 @@ body {
 
 .header-text {
     flex: 1;
-    min-width: 0; /* Allow text to shrink */
+    min-width: 0;
+    /* Allow text to shrink */
 }
 
-.header-text h1 {
+/* Updated PocketMCS Title Styling */
+.title-pmcs {
     font-size: 1.8rem;
-    font-weight: 700;
+    font-weight: 900;
     margin-bottom: 5px;
+}
+
+.title-pmcs .pocket {
+    color: #81c784;
+    font-weight: 900;
+    font-size: 0.9em;
+}
+
+.title-pmcs .mcs {
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 .header-text p {
@@ -117,11 +131,30 @@ body {
     word-wrap: break-word;
 }
 
+/* Mobile responsive updates - LARGER TITLE */
+@media (max-width: 767px) {
+    .title-pmcs {
+        font-size: 2.2rem;
+        /* Increased from 1.5rem to 2.2rem for bigger mobile title */
+    }
+
+    /* Optional: Adjust header content spacing for larger title */
+    .header-content {
+        gap: 12px;
+        /* Slightly more gap to accommodate larger title */
+    }
+
+    /* Optional: Adjust subtitle size to maintain proportion */
+    .header-text p {
+        font-size: 0.85rem;
+    }
+}
+
 /* Search Section - Enhanced for Mobile Scroll Behavior */
 .search-section {
     background: white;
     padding: 20px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -133,12 +166,13 @@ body {
 
 /* Mobile-specific sticky behavior */
 @media (max-width: 767px) {
+
     /* Keep the main header in normal flow */
     .header {
         position: relative;
         z-index: 1;
     }
-    
+
     /* Search section starts as normal sticky */
     .search-section {
         position: sticky;
@@ -147,36 +181,36 @@ body {
         z-index: 100;
         transform: translateY(0);
     }
-    
+
     /* Enhanced styling when sticky behavior activates */
     .search-section.sticky-active {
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         background: rgba(255, 255, 255, 0.95);
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    
+
     /* Hidden state when scrolling down */
     .search-section.scroll-hidden {
         transform: translateY(-100%);
     }
-    
+
     /* Visible state when scrolling up with enhanced shadow */
     .search-section.scroll-visible {
         transform: translateY(0);
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
         background: rgba(255, 255, 255, 0.98);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         border-bottom: 1px solid rgba(0, 0, 0, 0.15);
     }
-    
+
     /* Smooth transition for all transform changes */
     .search-section * {
         transition: all 0.3s ease;
     }
-    
+
     /* Main content padding remains normal */
     .main-content {
         padding-top: 30px;
@@ -418,7 +452,7 @@ body {
 .item-card {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     padding: 25px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
@@ -428,7 +462,7 @@ body {
 
 .item-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 
 .item-card.vehicle-specific {
@@ -516,11 +550,30 @@ body {
     text-transform: uppercase;
 }
 
-.interval-before { background-color: #e3f2fd; color: #1565c0; }
-.interval-during { background-color: #fff3e0; color: #ef6c00; }
-.interval-after { background-color: #f3e5f5; color: #7b1fa2; }
-.interval-weekly { background-color: #e8f5e8; color: #2e7d32; }
-.interval-monthly { background-color: #fce4ec; color: #c2185b; }
+.interval-before {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.interval-during {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+.interval-after {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.interval-weekly {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+}
+
+.interval-monthly {
+    background-color: #fce4ec;
+    color: #c2185b;
+}
 
 .location-title {
     font-size: 1.3rem;
@@ -617,14 +670,16 @@ body {
     left: 0;
     width: 100%;
     height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for modern browsers */
-    background: rgba(0,0,0,0.5);
+    height: 100dvh;
+    /* Dynamic viewport height for modern browsers */
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    padding-bottom: env(safe-area-inset-bottom, 20px); /* Account for home indicator */
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    /* Account for home indicator */
 }
 
 .modal-content {
@@ -632,40 +687,81 @@ body {
     border-radius: 12px;
     max-width: 500px;
     width: 100%;
-    max-height: calc(100vh - 120px); /* Leave more space for browser UI */
-    max-height: calc(100dvh - 120px); /* Dynamic viewport version */
+    max-height: calc(100vh - 120px);
+    /* Leave more space for browser UI */
+    max-height: calc(100dvh - 120px);
+    /* Dynamic viewport version */
     overflow-y: auto;
-    margin-bottom: env(safe-area-inset-bottom, 0px); /* Extra margin for home indicator */
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+    /* Extra margin for home indicator */
 }
 
 /* Additional mobile-specific PMCS Intervals Modal */
 @media (max-width: 767px) {
     .modal {
-        padding: 10px;
-        padding-bottom: 120px; /* Fixed large bottom padding */
+        padding: 15px;
+        padding-bottom: 15px;
         align-items: flex-start;
-        padding-top: 20px; /* Minimal top space */
+        padding-top: 15px;
     }
-    
+
     .modal-content {
-        max-height: calc(100vh - 220px); /* Much more conservative height */
-        max-height: calc(100dvh - 220px);
-        margin-top: 0;
-        margin-bottom: 0;
-        transform: translateY(-20px); /* Pull the entire modal up */
+        max-height: calc(100vh - 160px);
+        /* Conservative height for mobile browsers */
+        max-height: calc(100dvh - 160px);
+        margin-top: 10px;
+        margin-bottom: 60px;
+        /* Large bottom margin to clear mobile bars */
+        display: flex;
+        flex-direction: column;
     }
-    
+
+    .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+        max-height: calc(100vh - 280px);
+        /* Ensure body is scrollable */
+        max-height: calc(100dvh - 280px);
+    }
+
     .modal-footer {
-        padding: 15px 25px 40px 25px; /* Large bottom padding */
+        padding: 15px 25px 25px 25px;
         border-top: 1px solid #e0e0e0;
         display: flex;
         gap: 10px;
         justify-content: flex-end;
-        position: sticky;
-        bottom: 0;
         background: white;
         border-radius: 0 0 12px 12px;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+        /* Prevent footer from shrinking */
+        position: relative;
+        /* Remove sticky positioning */
+    }
+
+    /* Make interval items more compact on mobile */
+    .interval-item {
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+    }
+
+    .interval-description strong {
+        font-size: 14px;
+    }
+
+    .interval-description p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .note-section {
+        padding: 12px;
+        margin-top: 12px;
+    }
+
+    .note-section p {
+        font-size: 13px;
     }
 }
 
@@ -865,7 +961,7 @@ body {
     padding: 60px 20px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .no-results-icon {
@@ -1000,21 +1096,21 @@ body {
         grid-template-columns: 2fr 1fr;
         gap: 15px;
     }
-    
+
     .filter-controls {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 15px;
     }
-    
+
     .info-btn {
         width: auto;
         justify-content: flex-start;
     }
-    
+
     .copy-btn {
         width: auto;
     }
-    
+
     /* Reset mobile scroll behavior on desktop */
     .search-section {
         position: sticky !important;
@@ -1024,11 +1120,11 @@ body {
         -webkit-backdrop-filter: none !important;
         border-bottom: none !important;
     }
-    
+
     .main-content {
         padding-top: 30px !important;
     }
-    
+
     .vehicle-info-section {
         margin-top: 0 !important;
     }
@@ -1039,7 +1135,7 @@ body {
         grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
         align-items: start;
     }
-    
+
     .filter-controls {
         display: contents;
     }
@@ -1050,61 +1146,61 @@ body {
     .container {
         padding: 0 15px;
     }
-    
+
     .header-content {
         flex-direction: column;
         text-align: center;
         gap: 10px;
     }
-    
+
     .header-text h1 {
         font-size: 1.5rem;
     }
-    
+
     .header-text p {
         font-size: 0.8rem;
     }
-    
+
     .search-section {
         padding: 15px 0;
     }
-    
+
     .vehicle-info-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
         gap: 12px;
     }
-    
+
     .vehicle-details {
         min-width: auto;
         text-align: center;
     }
-    
+
     .item-header {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .location-title {
         font-size: 1.1rem;
     }
-    
+
     .item-card {
         padding: 20px;
     }
-    
+
     .modal-content {
         margin: 10px;
         max-height: 95vh;
     }
-    
+
     .modal-header,
     .modal-body,
     .modal-footer {
         padding: 15px 20px;
     }
-    
+
     .modal-footer {
         flex-direction: column;
     }
@@ -1113,12 +1209,12 @@ body {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .footer-bottom {
         flex-direction: column;
         gap: 5px;
     }
-    
+
     .footer-safety {
         flex-direction: column;
         gap: 5px;
@@ -1129,39 +1225,41 @@ body {
     .container {
         padding: 0 10px;
     }
-    
+
     .item-card {
         padding: 15px;
     }
-    
+
     .procedure-content {
         padding: 12px;
     }
-    
+
     .modal-footer {
         gap: 8px;
     }
-    
+
     .vehicle-icon {
         width: 40px;
         height: 40px;
         font-size: 1.5rem;
     }
-    
+
     .search-input-container input {
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
+        /* Prevents zoom on iOS */
     }
 }
 
 /* Print Styles */
 @media print {
+
     .search-section,
     .copy-btn,
     .modal,
     .vehicle-info-section {
         display: none !important;
     }
-    
+
     .item-card {
         break-inside: avoid;
         box-shadow: none;

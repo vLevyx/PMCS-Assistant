@@ -18,7 +18,7 @@
                 </div>
                 <div class="header-text">
                     <h1>PMCS Assistant</h1>
-                    <p>TM 9-2320-280-10 | Preventive Maintenance Checks and Services</p>
+                    <p><a href="https://www.nsndepot.com/Files/library/TM/HMMWV/TM-9-2320-280-10/TM-9-2320-280-10.pdf" target="_blank" rel="noopener noreferrer" class="tm-link">TM 9-2320-280-10</a> | Preventive Maintenance Checks and Services</p>
                 </div>
             </div>
         </div>
@@ -33,6 +33,41 @@
                         placeholder="Describe the fault (e.g., 'engine won't start', 'oil leak', 'AC blows warm air')...">
                     <span class="search-icon">🔍</span>
                 </div>
+                
+                <!-- New Vehicle Filter -->
+                <select id="vehicleFilter">
+                    <option value="all">All Vehicles</option>
+                    <optgroup label="Cargo/Troop Carriers">
+                        <option value="m998">M998/M998A1 Cargo/Troop</option>
+                        <option value="m1038">M1038/M1038A1 Cargo/Troop W/W</option>
+                    </optgroup>
+                    <optgroup label="Heavy Variants">
+                        <option value="m1097">M1097/M1097A1/M1097A2 Heavy</option>
+                        <option value="m1123">M1123 Heavy Variant</option>
+                    </optgroup>
+                    <optgroup label="TOW Carriers">
+                        <option value="m966">M966/M966A1/M1121 TOW Armored</option>
+                        <option value="m1036">M1036 TOW Armored W/W</option>
+                        <option value="m1045">M1045/M1045A1/M1045A2 TOW W/Armor</option>
+                        <option value="m1046">M1046/M1046A1 TOW W/Armor W/W</option>
+                    </optgroup>
+                    <optgroup label="Armament Carriers">
+                        <option value="m1025">M1025/M1025A1/M1025A2 Armament Armored</option>
+                        <option value="m1026">M1026/M1026A1 Armament Armored W/W</option>
+                        <option value="m1043">M1043/M1043A1/M1043A2 Armament W/Armor</option>
+                        <option value="m1044">M1044/M1044A1 Armament W/Armor W/W</option>
+                    </optgroup>
+                    <optgroup label="Shelter Carriers">
+                        <option value="m1037">M1037 S250 Shelter</option>
+                        <option value="m1042">M1042 S250 Shelter W/W</option>
+                    </optgroup>
+                    <optgroup label="Ambulances">
+                        <option value="m996">M996/M996A1 2-Litter Armored</option>
+                        <option value="m997">M997/M997A1/M997A2 4-Litter Armored</option>
+                        <option value="m1035">M1035/M1035A1/M1035A2 2-Litter Soft Top</option>
+                    </optgroup>
+                </select>
+
                 <select id="systemFilter">
                     <option value="all">All Systems</option>
                     <option value="engine">Engine</option>
@@ -46,6 +81,7 @@
                     <option value="weapon systems">Weapon Systems</option>
                     <option value="climate control">Climate Control</option>
                 </select>
+                
                 <select id="intervalFilter">
                     <option value="all">All Intervals</option>
                     <option value="before">Before</option>
@@ -54,9 +90,28 @@
                     <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
                 </select>
+                
                 <button id="intervalInfoBtn" class="info-btn" title="Learn about PMCS intervals">
                     ℹ️ PMCS Intervals
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Information Display -->
+    <div id="vehicleInfo" class="vehicle-info-section" style="display: none;">
+        <div class="container">
+            <div class="vehicle-info-content">
+                <div class="vehicle-info-header">
+                    <span class="vehicle-icon">🚛</span>
+                    <div class="vehicle-details">
+                        <h3 id="vehicleTitle">Vehicle Selected</h3>
+                        <p id="vehicleDescription">Vehicle-specific PMCS items are now filtered</p>
+                    </div>
+                    <div class="vehicle-stats">
+                        <span id="applicableItems" class="stat-badge">0 Items</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +126,15 @@
             <div id="noResults" class="no-results" style="display: none;">
                 <div class="no-results-icon">⚠️</div>
                 <p>No items found matching your search criteria.</p>
+                <div class="no-results-suggestions">
+                    <p><strong>Try:</strong></p>
+                    <ul>
+                        <li>Selecting "All Vehicles" if you filtered by a specific vehicle</li>
+                        <li>Changing your system or interval filters</li>
+                        <li>Using different search terms</li>
+                        <li>Checking for typos in your search</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </main>
@@ -99,6 +163,10 @@
                     <div class="copy-field">
                         <label>Mission Capable Status:</label>
                         <div id="modalStatus" class="copy-value"></div>
+                    </div>
+                    <div class="copy-field">
+                        <label>Applicable Vehicle:</label>
+                        <div id="modalVehicle" class="copy-value"></div>
                     </div>
                 </div>
             </div>
@@ -179,12 +247,62 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>Reference: TM 9-2320-280-10 | Use official technical manuals for complete procedures</p>
+    <!-- Vehicle Filter Info Modal -->
+    <div id="vehicleInfoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Vehicle Information</h3>
+                <span class="close-btn" id="closeVehicleInfoModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="vehicleInfoDetails" class="vehicle-info-details">
+                    <!-- Vehicle-specific information will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeVehicleInfoModalBtn" class="btn btn-primary">Close</button>
+            </div>
         </div>
-    </footer>
+    </div>
+
+    <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <p class="footer-reference">
+                    <strong>Reference:</strong> 
+                    <a href="https://www.nsndepot.com/Files/library/TM/HMMWV/TM-9-2320-280-10/TM-9-2320-280-10.pdf" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="footer-link">TM 9-2320-280-10</a>
+                </p>
+                <p class="footer-disclaimer">
+                    <strong>IMPORTANT:</strong> Use official technical manuals for complete procedures. 
+                    This assistant is for reference only and does not replace official maintenance documentation.
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <p class="footer-safety">
+                    <span class="safety-icon">⚠️</span>
+                    Always follow proper safety procedures and notify unit maintenance for any issues beyond operator level.
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <p class="footer-compliance">
+                    Ensure compliance with AR 750-1, AR 385-55, and local unit SOPs for vehicle operations and maintenance.
+                </p>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-version">PMCS Assistant v1.0.0 | For U.S. Army HMMWV Fleet</p>
+                <p class="footer-update">Data accurate as of January 2025</p>
+            </div>
+        </div>
+    </div>
+</footer>
 
     <script src="script.js"></script>
 </body>

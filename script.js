@@ -1566,6 +1566,126 @@ const pmcsData = [
     }
 ];
 
+const vehicleMapping = {
+    // Cargo/Troop Carriers
+    'm998': ['M998', 'M998A1'],
+    'm1038': ['M1038', 'M1038A1'],
+
+    // Heavy Variants
+    'm1097': ['M1097', 'M1097A1', 'M1097A2'],
+    'm1123': ['M1123'],
+
+    // TOW Carriers
+    'm966': ['M966', 'M966A1', 'M1121'],
+    'm1036': ['M1036'],
+    'm1045': ['M1045', 'M1045A1', 'M1045A2'],
+    'm1046': ['M1046', 'M1046A1'],
+
+    // Armament Carriers
+    'm1025': ['M1025', 'M1025A1', 'M1025A2'],
+    'm1026': ['M1026', 'M1026A1'],
+    'm1043': ['M1043', 'M1043A1', 'M1043A2'],
+    'm1044': ['M1044', 'M1044A1'],
+
+    // Shelter Carriers
+    'm1037': ['M1037'],
+    'm1042': ['M1042'],
+
+    // Ambulances
+    'm996': ['M996', 'M996A1'],
+    'm997': ['M997', 'M997A1', 'M997A2'],
+    'm1035': ['M1035', 'M1035A1', 'M1035A2']
+};
+
+const vehicleInfo = {
+    'm998': {
+        name: 'M998/M998A1 Cargo/Troop Carriers',
+        description: 'Basic cargo and troop transport variants',
+        features: ['Standard HMMWV platform', 'Cargo/troop transport', 'Soft top available']
+    },
+    'm1038': {
+        name: 'M1038/M1038A1 Cargo/Troop Carriers W/W',
+        description: 'Winch-equipped cargo and troop carriers',
+        features: ['Cargo/troop transport', 'Winch equipped', 'Soft top available']
+    },
+    'm1097': {
+        name: 'M1097/M1097A1/M1097A2 Heavy Variants',
+        description: 'Heavy duty chassis for specialized equipment',
+        features: ['Heavy duty chassis', 'Increased payload capacity', 'Specialized mounting points']
+    },
+    'm1123': {
+        name: 'M1123 Heavy Variant',
+        description: 'Latest heavy variant with improved systems',
+        features: ['Enhanced heavy chassis', 'Improved electrical system', 'Advanced cooling']
+    },
+    'm966': {
+        name: 'M966/M966A1/M1121 TOW Carriers',
+        description: 'Armored TOW missile carriers',
+        features: ['Armored protection', 'TOW missile system', 'Weapon station']
+    },
+    'm1036': {
+        name: 'M1036 TOW Carrier W/W',
+        description: 'Winch-equipped armored TOW carrier',
+        features: ['Armored protection', 'TOW missile system', 'Winch equipped']
+    },
+    'm1045': {
+        name: 'M1045/M1045A1/M1045A2 TOW Carriers',
+        description: 'TOW carriers with supplemental armor',
+        features: ['Supplemental armor kit', 'TOW missile system', 'Enhanced protection']
+    },
+    'm1046': {
+        name: 'M1046/M1046A1 TOW Carriers W/W',
+        description: 'Winch-equipped TOW carriers with supplemental armor',
+        features: ['Supplemental armor kit', 'TOW missile system', 'Winch equipped']
+    },
+    'm1025': {
+        name: 'M1025/M1025A1/M1025A2 Armament Carriers',
+        description: 'Armored armament carriers',
+        features: ['Armored protection', 'Weapon mount systems', 'Crew protection']
+    },
+    'm1026': {
+        name: 'M1026/M1026A1 Armament Carriers W/W',
+        description: 'Winch-equipped armored armament carriers',
+        features: ['Armored protection', 'Weapon mount systems', 'Winch equipped']
+    },
+    'm1043': {
+        name: 'M1043/M1043A1/M1043A2 Armament Carriers',
+        description: 'Armament carriers with supplemental armor',
+        features: ['Supplemental armor kit', 'Weapon mount systems', 'Enhanced protection']
+    },
+    'm1044': {
+        name: 'M1044/M1044A1 Armament Carriers W/W',
+        description: 'Winch-equipped armament carriers with supplemental armor',
+        features: ['Supplemental armor kit', 'Weapon mount systems', 'Winch equipped']
+    },
+    'm1037': {
+        name: 'M1037 S250 Shelter Carrier',
+        description: 'Shelter carrier for S250 shelter systems',
+        features: ['S250 shelter mount', 'Specialized electrical', 'Mobile command post']
+    },
+    'm1042': {
+        name: 'M1042 S250 Shelter Carrier W/W',
+        description: 'Winch-equipped shelter carrier',
+        features: ['S250 shelter mount', 'Winch equipped', 'Mobile command post']
+    },
+    'm996': {
+        name: 'M996/M996A1 2-Litter Ambulances',
+        description: 'Armored 2-litter ambulances',
+        features: ['Medical equipment', '2-litter capacity', 'NBC system', 'Patient compartment']
+    },
+    'm997': {
+        name: 'M997/M997A1/M997A2 4-Litter Ambulances',
+        description: 'Armored 4-litter ambulances',
+        features: ['Medical equipment', '4-litter capacity', 'NBC system', 'Extended patient compartment']
+    },
+    'm1035': {
+        name: 'M1035/M1035A1/M1035A2 2-Litter Ambulances',
+        description: 'Soft top 2-litter ambulances',
+        features: ['Medical equipment', '2-litter capacity', 'Soft top configuration']
+    }
+};
+
+
 // ========================================
 // APPLICATION STATE
 // ========================================
@@ -1606,6 +1726,9 @@ class PMCSApp {
         this.intervalFilter = document.getElementById('intervalFilter');
         this.systemFilter = document.getElementById('systemFilter');
         this.intervalInfoBtn = document.getElementById('intervalInfoBtn');
+        this.vehicleFilter = document.getElementById('vehicleFilter');
+        this.vehicleInfo = document.getElementById('vehicleInfo');
+        this.vehicleInfoModal = document.getElementById('vehicleInfoModal');
 
         // Results display
         this.resultsContainer = document.getElementById('resultsContainer');
@@ -1623,7 +1746,10 @@ class PMCSApp {
             closeBtn: document.getElementById('closeModalBtn'),
             closeX: document.getElementById('closeModal'),
             intervalCloseBtn: document.getElementById('closeIntervalModalBtn'),
-            intervalCloseX: document.getElementById('closeIntervalModal')
+            intervalCloseX: document.getElementById('closeIntervalModal'),
+            vehicleCloseX: document.getElementById('closeVehicleInfoModal'),
+            vehicleCloseBtn: document.getElementById('closeVehicleInfoModalBtn'),
+            vehicle: document.getElementById('modalVehicle')
         };
 
         // Validate all elements exist
@@ -1644,6 +1770,7 @@ class PMCSApp {
         this.intervalFilter?.addEventListener('change', () => this.filterItems());
         this.systemFilter?.addEventListener('change', () => this.filterItems());
         this.intervalInfoBtn?.addEventListener('click', () => this.showIntervalInfoModal());
+        this.vehicleFilter?.addEventListener('change', () => this.handleVehicleFilterChange());
 
         // Modal event listeners
         this.modalElements.closeX?.addEventListener('click', () => this.hideCopyModal());
@@ -1653,6 +1780,8 @@ class PMCSApp {
         // Interval info modal listeners
         this.modalElements.intervalCloseX?.addEventListener('click', () => this.hideIntervalInfoModal());
         this.modalElements.intervalCloseBtn?.addEventListener('click', () => this.hideIntervalInfoModal());
+        this.modalElements.vehicleCloseX?.addEventListener('click', () => this.hideVehicleInfoModal());
+        this.modalElements.vehicleCloseBtn?.addEventListener('click', () => this.hideVehicleInfoModal());
 
         // Close modal when clicking outside
         this.copyModal?.addEventListener('click', (e) => {
@@ -1667,6 +1796,12 @@ class PMCSApp {
             }
         });
 
+        this.vehicleInfoModal?.addEventListener('click', (e) => {
+            if (e.target === this.vehicleInfoModal) {
+                this.hideVehicleInfoModal();
+            }
+        });
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -1674,6 +1809,8 @@ class PMCSApp {
                     this.hideCopyModal();
                 } else if (this.intervalInfoModal?.style.display === 'flex') {
                     this.hideIntervalInfoModal();
+                } else if (this.vehicleInfoModal?.style.display === 'flex') {
+                    this.hideVehicleInfoModal();
                 }
             }
             if (e.key === '/' && !this.isInputFocused()) {
@@ -1691,6 +1828,7 @@ class PMCSApp {
         const searchTerm = this.searchInput?.value.toLowerCase() || '';
         const selectedInterval = this.intervalFilter?.value || 'all';
         const selectedSystem = this.systemFilter?.value || 'all';
+        const selectedVehicle = this.vehicleFilter?.value || 'all';
 
         const filteredData = pmcsData.filter(item => {
             // Enhanced search across multiple fields
@@ -1699,48 +1837,172 @@ class PMCSApp {
                 item.interval.toLowerCase() === selectedInterval;
             const matchesSystem = selectedSystem === 'all' ||
                 (item.system && item.system.toLowerCase() === selectedSystem);
+            const matchesVehicle = selectedVehicle === 'all' ||
+                this.itemMatchesVehicle(item, selectedVehicle);
 
-            return matchesSearch && matchesInterval && matchesSystem;
+            return matchesSearch && matchesInterval && matchesSystem && matchesVehicle;
         });
 
         this.displayItems(filteredData);
+        this.updateVehicleInfo(selectedVehicle, filteredData.length);
     }
 
     itemMatchesSearch(item, searchTerm) {
-    const searchFields = [
-        item.itemNumber,
-        item.location,
-        item.procedure,
-        item.notFullyMissionCapable,
-        item.system || ''
-    ];
+        const searchFields = [
+            item.itemNumber,
+            item.location,
+            item.procedure,
+            item.notFullyMissionCapable,
+            item.system || ''
+        ];
 
-    // Add keywords and common faults to search
-    if (item.keywords) {
-        searchFields.push(...item.keywords);
+        // Add keywords and common faults to search
+        if (item.keywords) {
+            searchFields.push(...item.keywords);
+        }
+        if (item.commonFaults) {
+            searchFields.push(...item.commonFaults);
+        }
+
+        // Normalize search term and fields for better matching
+        const normalizedSearchTerm = this.normalizeSearchText(searchTerm);
+
+        return searchFields.some(field => {
+            const normalizedField = this.normalizeSearchText(field);
+            return normalizedField.includes(normalizedSearchTerm);
+        });
     }
-    if (item.commonFaults) {
-        searchFields.push(...item.commonFaults);
+
+    // Helper method to normalize text for searching
+    normalizeSearchText(text) {
+        return text
+            .toLowerCase()
+            .replace(/'/g, '')  // Remove apostrophes
+            .replace(/['']/g, '')  // Remove curly apostrophes
+            .replace(/\s+/g, ' ')  // Normalize whitespace
+            .trim();
     }
 
-    // Normalize search term and fields for better matching
-    const normalizedSearchTerm = this.normalizeSearchText(searchTerm);
+    // ========================================
+    // ADD NEW METHODS
+    // ========================================
 
-    return searchFields.some(field => {
-        const normalizedField = this.normalizeSearchText(field);
-        return normalizedField.includes(normalizedSearchTerm);
-    });
-}
+    handleVehicleFilterChange() {
+        this.filterItems();
+    }
 
-// Helper method to normalize text for searching
-normalizeSearchText(text) {
-    return text
-        .toLowerCase()
-        .replace(/'/g, '')  // Remove apostrophes
-        .replace(/['']/g, '')  // Remove curly apostrophes
-        .replace(/\s+/g, ' ')  // Normalize whitespace
-        .trim();
-}
+    itemMatchesVehicle(item, selectedVehicle) {
+        if (selectedVehicle === 'all') return true;
+
+        // Check if the item's procedure mentions any of the vehicle models for this selection
+        const vehicleModels = vehicleMapping[selectedVehicle];
+        if (!vehicleModels) return true;
+
+        // Check procedure text for vehicle-specific mentions
+        const procedureText = item.procedure.toLowerCase();
+
+        // Some items are applicable to specific vehicles mentioned in their procedures
+        const hasVehicleSpecificMention = vehicleModels.some(model =>
+            procedureText.includes(model.toLowerCase())
+        );
+
+        // Items without specific vehicle mentions are generally applicable to all vehicles
+        // Items WITH specific mentions are only for those vehicles
+        if (procedureText.includes('m99') || procedureText.includes('m10') || procedureText.includes('m11')) {
+            return hasVehicleSpecificMention;
+        }
+
+        // For ambulance-specific items
+        if (item.location.toLowerCase().includes('ambulance') ||
+            item.location.toLowerCase().includes('patient') ||
+            item.system === 'Climate Control' && item.location.includes('Air-conditioner')) {
+            return ['m996', 'm997', 'm1035'].includes(selectedVehicle);
+        }
+
+        // For weapon system items
+        if (item.system === 'Weapon Systems') {
+            const weaponVehicles = ['m966', 'm1036', 'm1045', 'm1046', 'm1025', 'm1026', 'm1043', 'm1044'];
+            return weaponVehicles.includes(selectedVehicle);
+        }
+
+        // NBC system is only on ambulances
+        if (item.location.includes('NBC System')) {
+            return ['m996', 'm997'].includes(selectedVehicle);
+        }
+
+        // Winch items only for winch-equipped vehicles
+        if (item.location.toLowerCase().includes('winch')) {
+            const winchVehicles = ['m1038', 'm1036', 'm1042', 'm1046', 'm1026', 'm1044'];
+            return winchVehicles.includes(selectedVehicle);
+        }
+
+        // Exhaust louvers are only on specific ambulance models
+        if (item.location.includes('Exhaust Louvers')) {
+            return ['m996'].includes(selectedVehicle);
+        }
+
+        // Default: item applies to all vehicles
+        return true;
+    }
+
+    updateVehicleInfo(selectedVehicle, itemCount) {
+        if (!this.vehicleInfo) return;
+
+        if (selectedVehicle === 'all') {
+            this.vehicleInfo.style.display = 'none';
+            return;
+        }
+
+        const info = vehicleInfo[selectedVehicle];
+        if (!info) return;
+
+        this.vehicleInfo.style.display = 'block';
+
+        const titleElement = document.getElementById('vehicleTitle');
+        const descriptionElement = document.getElementById('vehicleDescription');
+        const itemsElement = document.getElementById('applicableItems');
+
+        if (titleElement) titleElement.textContent = info.name;
+        if (descriptionElement) descriptionElement.textContent = info.description;
+        if (itemsElement) itemsElement.textContent = `${itemCount} Items`;
+    }
+
+    showVehicleInfoModal(vehicleType) {
+        if (!this.vehicleInfoModal || !vehicleType || vehicleType === 'all') return;
+
+        const info = vehicleInfo[vehicleType];
+        if (!info) return;
+
+        const detailsElement = document.getElementById('vehicleInfoDetails');
+        if (detailsElement) {
+            detailsElement.innerHTML = `
+            <h4>${info.name}</h4>
+            <p>${info.description}</p>
+            <h4>Key Features:</h4>
+            <ul>
+                ${info.features.map(feature => `<li>${feature}</li>`).join('')}
+            </ul>
+            <h4>Vehicle Models:</h4>
+            <ul>
+                ${vehicleMapping[vehicleType].map(model => `<li>${model}</li>`).join('')}
+            </ul>
+        `;
+        }
+
+        this.vehicleInfoModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+            this.modalElements.vehicleCloseBtn?.focus();
+        }, 100);
+    }
+
+    hideVehicleInfoModal() {
+        if (!this.vehicleInfoModal) return;
+
+        this.vehicleInfoModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
 
     // ========================================
     // DISPLAY FUNCTIONS
@@ -1879,6 +2141,16 @@ normalizeSearchText(text) {
             this.modalElements.status.textContent = item.notFullyMissionCapable;
         }
 
+        // Add vehicle information to modal
+        if (this.modalElements.vehicle) {
+            const selectedVehicle = this.vehicleFilter?.value || 'all';
+            if (selectedVehicle !== 'all' && vehicleInfo[selectedVehicle]) {
+                this.modalElements.vehicle.textContent = vehicleInfo[selectedVehicle].name;
+            } else {
+                this.modalElements.vehicle.textContent = 'All Vehicles';
+            }
+        }
+
         // Show modal
         this.copyModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -1920,9 +2192,15 @@ normalizeSearchText(text) {
         if (!this.currentModalItem) return;
 
         const item = this.currentModalItem;
+        const selectedVehicle = this.vehicleFilter?.value || 'all';
+        const vehicleName = selectedVehicle !== 'all' && vehicleInfo[selectedVehicle]
+            ? vehicleInfo[selectedVehicle].name
+            : 'All Vehicles';
+
         const textToCopy = `Item Number: ${item.itemNumber}
 Location/Item: ${item.location}
 Interval: ${item.interval}
+Vehicle: ${vehicleName}
 Not Fully Mission Capable If: ${item.notFullyMissionCapable}`;
 
         try {
@@ -2039,11 +2317,20 @@ Not Fully Mission Capable If: ${item.notFullyMissionCapable}`;
         }
     }
 
+    // Method to filter by vehicle
+    filterByVehicle(vehicle) {
+        if (this.vehicleFilter) {
+            this.vehicleFilter.value = vehicle;
+            this.filterItems();
+        }
+    }
+
     // Method to reset all filters
     resetFilters() {
         if (this.searchInput) this.searchInput.value = '';
         if (this.systemFilter) this.systemFilter.value = 'all';
         if (this.intervalFilter) this.intervalFilter.value = 'all';
+        if (this.vehicleFilter) this.vehicleFilter.value = 'all';
         this.filterItems();
     }
 
@@ -2052,7 +2339,8 @@ Not Fully Mission Capable If: ${item.notFullyMissionCapable}`;
         return {
             search: this.searchInput?.value || '',
             system: this.systemFilter?.value || 'all',
-            interval: this.intervalFilter?.value || 'all'
+            interval: this.intervalFilter?.value || 'all',
+            vehicle: this.vehicleFilter?.value || 'all'
         };
     }
 

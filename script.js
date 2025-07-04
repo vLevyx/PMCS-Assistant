@@ -1717,7 +1717,7 @@ class PMCSApp {
         this.initializeElements();
         this.setupEventListeners();
         this.displayItems(pmcsData);
-        console.log('PMCS 5988 Assistant initialized successfully');
+        console.log('PocketMCS initialized successfully');
     }
 
     initializeElements() {
@@ -2427,19 +2427,20 @@ class MobileScrollBehavior {
         this.scrollDirection = 'up';
         this.scrollThreshold = 5; // More sensitive scroll detection
         this.hideTimeout = null;
+        this.showTimeout = null;
         this.isMobile = false;
         this.isSticky = false; // Track if search section is at top
-        
+
         this.init();
     }
 
     init() {
         // Check if we're on mobile
         this.checkMobile();
-        
+
         // Get the search section element
         this.searchSection = document.querySelector('.search-section');
-        
+
         if (!this.searchSection) {
             console.warn('Search section not found for mobile scroll behavior');
             return;
@@ -2447,7 +2448,7 @@ class MobileScrollBehavior {
 
         // Set up event listeners
         this.setupEventListeners();
-        
+
         // Initial setup
         this.lastScrollY = window.scrollY;
     }
@@ -2459,7 +2460,7 @@ class MobileScrollBehavior {
     setupEventListeners() {
         // Throttled scroll listener for better performance
         let ticking = false;
-        
+
         window.addEventListener('scroll', () => {
             if (!ticking && this.isMobile) {
                 requestAnimationFrame(() => {
@@ -2473,7 +2474,7 @@ class MobileScrollBehavior {
         // Handle window resize
         window.addEventListener('resize', () => {
             this.checkMobile();
-            
+
             // Reset classes if switching to desktop
             if (!this.isMobile && this.searchSection) {
                 this.resetToNormal();
@@ -2483,7 +2484,7 @@ class MobileScrollBehavior {
         // Handle touch events for better mobile experience
         let touchStartY = 0;
         let touchStartTime = 0;
-        
+
         document.addEventListener('touchstart', (e) => {
             if (this.isMobile) {
                 touchStartY = e.touches[0].clientY;
@@ -2496,7 +2497,7 @@ class MobileScrollBehavior {
                 const touchY = e.touches[0].clientY;
                 const deltaY = touchStartY - touchY;
                 const deltaTime = Date.now() - touchStartTime;
-                
+
                 // If significant touch movement with reasonable speed
                 if (Math.abs(deltaY) > 10 && deltaTime > 50) {
                     this.scrollDirection = deltaY > 0 ? 'down' : 'up';
@@ -2522,7 +2523,7 @@ class MobileScrollBehavior {
         } else if (!isAtTop && this.isSticky) {
             this.isSticky = false;
             this.searchSection.classList.remove('sticky-active');
-            this.resetToNormal(); // Remove any scroll states when not sticky
+            this.resetToNormal();
         }
 
         // Determine scroll direction with threshold
@@ -2532,31 +2533,42 @@ class MobileScrollBehavior {
 
         // Only apply hide/show behavior when sticky
         if (this.isSticky) {
-            this.updateHeaderVisibility(currentScrollY);
+            this.updateHeaderVisibility(currentScrollY, scrollDifference);
         }
 
         this.lastScrollY = currentScrollY;
     }
 
-    updateHeaderVisibility(currentScrollY) {
+    updateHeaderVisibility(currentScrollY, scrollDifference) {
         // Only hide/show when we're in sticky mode and have scrolled a bit
         if (!this.isSticky || currentScrollY < 10) {
             return;
         }
 
-        // Hide header when scrolling down
+        // Hide header when scrolling down with immediate response
         if (this.scrollDirection === 'down') {
             this.hideHeader();
         }
-        // Show header when scrolling up
+        // Show header when scrolling up, but with more leeway
         else if (this.scrollDirection === 'up') {
-            this.showHeader();
+            // Require more significant upward scroll to show header
+            const upwardScrollAmount = Math.abs(scrollDifference);
+
+            // Show immediately if user scrolled up significantly (25px or more)
+            if (upwardScrollAmount >= 25) {
+                this.showHeader();
+            }
+            // Or show after accumulated smaller scrolls
+            else if (upwardScrollAmount >= 10) {
+                // Add a small delay for smaller scroll amounts
+                this.showHeaderWithDelay();
+            }
         }
     }
 
     showHeader() {
         if (!this.searchSection || !this.isSticky) return;
-        
+
         // Clear any pending hide timeout
         if (this.hideTimeout) {
             clearTimeout(this.hideTimeout);
@@ -2581,19 +2593,40 @@ class MobileScrollBehavior {
         }, 150); // Slightly longer delay for smoother feel
     }
 
-    resetToNormal() {
-        if (!this.searchSection) return;
-        
-        // Clear any pending hide timeout
-        if (this.hideTimeout) {
-            clearTimeout(this.hideTimeout);
-            this.hideTimeout = null;
-        }
-
-        // Remove all scroll-related classes
-        this.searchSection.classList.remove('scroll-hidden', 'scroll-visible', 'sticky-active');
-        this.isSticky = false;
+    showHeaderWithDelay() {
+    if (!this.searchSection || !this.isSticky) return;
+    
+    // Clear any existing timeout
+    if (this.showTimeout) {
+        clearTimeout(this.showTimeout);
     }
+    
+    // Show header after a short delay for accumulated small scrolls
+    this.showTimeout = setTimeout(() => {
+        if (this.scrollDirection === 'up') { // Double-check direction
+            this.showHeader();
+        }
+    }, 300); // 300ms delay for more natural feel
+}
+
+    resetToNormal() {
+    if (!this.searchSection) return;
+    
+    // Clear any pending timeouts
+    if (this.hideTimeout) {
+        clearTimeout(this.hideTimeout);
+        this.hideTimeout = null;
+    }
+    
+    if (this.showTimeout) {
+        clearTimeout(this.showTimeout);
+        this.showTimeout = null;
+    }
+
+    // Remove all scroll-related classes
+    this.searchSection.classList.remove('scroll-hidden', 'scroll-visible', 'sticky-active');
+    this.isSticky = false;
+}
 
     // Public method to force show header (useful for search focus, etc.)
     forceShowHeader() {
@@ -2612,7 +2645,7 @@ class MobileScrollBehavior {
 document.addEventListener('DOMContentLoaded', () => {
     // Create global instance
     window.mobileScrollBehavior = new MobileScrollBehavior();
-    
+
     // Optional: Show header when search input is focused
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -2628,19 +2661,19 @@ document.addEventListener('DOMContentLoaded', () => {
 if (typeof PMCSApp !== 'undefined') {
     // Extend the existing PMCSApp class to include mobile scroll behavior
     const originalInit = PMCSApp.prototype.init;
-    
-    PMCSApp.prototype.init = function() {
+
+    PMCSApp.prototype.init = function () {
         // Call original init
         originalInit.call(this);
-        
+
         // Initialize mobile scroll behavior
         this.mobileScrollBehavior = new MobileScrollBehavior();
-        
+
         // Show header when performing searches
         const originalFilterItems = this.filterItems;
-        this.filterItems = function() {
+        this.filterItems = function () {
             originalFilterItems.call(this);
-            
+
             // Show header after filtering on mobile
             if (this.mobileScrollBehavior && this.mobileScrollBehavior.getIsMobile()) {
                 this.mobileScrollBehavior.forceShowHeader();

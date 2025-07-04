@@ -85,10 +85,12 @@ body {
     gap: 15px;
     position: relative;
     z-index: 2;
+    width: 100%;
 }
 
 .header-icon {
     font-size: 2.5rem;
+    flex-shrink: 0;
 }
 
 .header-icon-img {
@@ -96,6 +98,11 @@ body {
     height: 2.5rem;
     object-fit: contain;
     filter: brightness(1.1) contrast(1.1);
+}
+
+.header-text {
+    flex: 1;
+    min-width: 0; /* Allow text to shrink */
 }
 
 .header-text h1 {
@@ -107,6 +114,7 @@ body {
 .header-text p {
     color: #b8d4c2;
     font-size: 0.9rem;
+    word-wrap: break-word;
 }
 
 /* Search Section */
@@ -117,18 +125,20 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .search-controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 15px;
-    flex-wrap: wrap;
+    width: 100%;
 }
 
 .search-input-container {
-    flex: 2;
     position: relative;
-    min-width: 300px;
+    width: 100%;
 }
 
 .search-input-container input {
@@ -138,6 +148,7 @@ body {
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .search-input-container input:focus {
@@ -154,6 +165,14 @@ body {
     font-size: 1.2rem;
 }
 
+/* Filter Controls Row */
+.filter-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    width: 100%;
+}
+
 /* Vehicle Filter */
 #vehicleFilter {
     padding: 12px 15px;
@@ -162,9 +181,9 @@ body {
     font-size: 16px;
     background: white;
     cursor: pointer;
-    min-width: 200px;
-    flex: 1;
     font-weight: 500;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #vehicleFilter:focus {
@@ -193,8 +212,8 @@ body {
     font-size: 16px;
     background: white;
     cursor: pointer;
-    min-width: 150px;
-    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #systemFilter:focus {
@@ -209,8 +228,8 @@ body {
     font-size: 16px;
     background: white;
     cursor: pointer;
-    min-width: 150px;
-    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #intervalFilter:focus {
@@ -314,6 +333,9 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .info-btn:hover {
@@ -338,6 +360,8 @@ body {
     padding: 25px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .item-card:hover {
@@ -441,6 +465,7 @@ body {
     font-weight: 600;
     color: #1a1a1a;
     margin-bottom: 15px;
+    word-wrap: break-word;
 }
 
 .procedure-section {
@@ -454,6 +479,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .procedure-content {
@@ -461,6 +487,8 @@ body {
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #2d5a3d;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .procedure-content p {
@@ -512,6 +540,8 @@ body {
     font-weight: 600;
     transition: background-color 0.3s ease;
     margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .copy-btn:hover {
@@ -553,6 +583,7 @@ body {
 .modal-header h3 {
     margin: 0;
     color: #1a1a1a;
+    word-wrap: break-word;
 }
 
 .close-btn {
@@ -560,6 +591,8 @@ body {
     cursor: pointer;
     color: #666;
     line-height: 1;
+    flex-shrink: 0;
+    margin-left: 10px;
 }
 
 .close-btn:hover {
@@ -587,6 +620,8 @@ body {
     border-radius: 6px;
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
     font-size: 14px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .modal-footer {
@@ -650,6 +685,39 @@ body {
 .vehicle-info-details li {
     margin-bottom: 5px;
     color: #555;
+}
+
+/* Info Button */
+.info-btn {
+    background: #2d5a3d;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.info-btn:hover {
+    background: #1e4d2b;
+}
+
+/* Interval Icon Image */
+.interval-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+    filter: brightness(1.1) contrast(1.1);
+    flex-shrink: 0;
 }
 
 /* PMCS Intervals Info Modal */
@@ -852,23 +920,49 @@ body {
     margin: 0;
 }
 
-/* Mobile Footer */
-@media (max-width: 768px) {
-    .footer-bottom {
-        flex-direction: column;
-        gap: 5px;
+/* Desktop Responsive Breakpoints */
+@media (min-width: 768px) {
+    .search-controls {
+        grid-template-columns: 2fr 1fr;
+        gap: 15px;
     }
     
-    .footer-safety {
-        flex-direction: column;
-        gap: 5px;
+    .filter-controls {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .info-btn {
+        width: auto;
+        justify-content: flex-start;
+    }
+    
+    .copy-btn {
+        width: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .search-controls {
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        align-items: start;
+    }
+    
+    .filter-controls {
+        display: contents;
     }
 }
 
 /* Mobile Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .container {
         padding: 0 15px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
     }
     
     .header-text h1 {
@@ -879,30 +973,20 @@ body {
         font-size: 0.8rem;
     }
     
-    .search-controls {
-        flex-direction: column;
-    }
-    
-    .search-input-container {
-        min-width: auto;
-    }
-    
-    #vehicleFilter {
-        min-width: auto;
-    }
-    
-    .info-btn {
-        align-self: flex-start;
+    .search-section {
+        padding: 15px 0;
     }
     
     .vehicle-info-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
         gap: 12px;
     }
     
     .vehicle-details {
         min-width: auto;
+        text-align: center;
     }
     
     .item-header {
@@ -937,13 +1021,21 @@ body {
         flex-direction: column;
         gap: 10px;
     }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .footer-safety {
+        flex-direction: column;
+        gap: 5px;
+    }
 }
 
 @media (max-width: 480px) {
-    .header-content {
-        text-align: center;
-        flex-direction: column;
-        gap: 10px;
+    .container {
+        padding: 0 10px;
     }
     
     .item-card {
@@ -962,6 +1054,10 @@ body {
         width: 40px;
         height: 40px;
         font-size: 1.5rem;
+    }
+    
+    .search-input-container input {
+        font-size: 16px; /* Prevents zoom on iOS */
     }
 }
 

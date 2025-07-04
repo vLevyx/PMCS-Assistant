@@ -18,7 +18,9 @@
                 </div>
                 <div class="header-text">
                     <h1>PMCS Assistant</h1>
-                    <p><a href="https://www.nsndepot.com/Files/library/TM/HMMWV/TM-9-2320-280-10/TM-9-2320-280-10.pdf" target="_blank" rel="noopener noreferrer" class="tm-link">TM 9-2320-280-10</a> | Preventive Maintenance Checks and Services</p>
+                    <p><a href="https://www.nsndepot.com/Files/library/TM/HMMWV/TM-9-2320-280-10/TM-9-2320-280-10.pdf"
+                            target="_blank" rel="noopener noreferrer" class="tm-link">TM 9-2320-280-10</a> | Preventive
+                        Maintenance Checks and Services</p>
                 </div>
             </div>
         </div>
@@ -33,7 +35,7 @@
                         placeholder="Describe the fault (e.g., 'engine won't start', 'oil leak', 'AC blows warm air')...">
                     <span class="search-icon">🔍</span>
                 </div>
-                
+
                 <!-- New Vehicle Filter -->
                 <select id="vehicleFilter">
                     <option value="all">All Vehicles</option>
@@ -81,7 +83,7 @@
                     <option value="weapon systems">Weapon Systems</option>
                     <option value="climate control">Climate Control</option>
                 </select>
-                
+
                 <select id="intervalFilter">
                     <option value="all">All Intervals</option>
                     <option value="before">Before</option>
@@ -90,9 +92,10 @@
                     <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
                 </select>
-                
+
                 <button id="intervalInfoBtn" class="info-btn" title="Learn about PMCS intervals">
-                    ℹ️ PMCS Intervals
+                    <img src="images/interval.png" alt="PMCS Intervals" class="interval-icon">
+                    PMCS Intervals
                 </button>
             </div>
         </div>
@@ -266,43 +269,43 @@
     </div>
 
     <!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <p class="footer-reference">
-                    <strong>Reference:</strong> 
-                    <a href="https://www.nsndepot.com/Files/library/TM/HMMWV/TM-9-2320-280-10/TM-9-2320-280-10.pdf" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       class="footer-link">TM 9-2320-280-10</a>
-                </p>
-                <p class="footer-disclaimer">
-                    <strong>IMPORTANT:</strong> Use official technical manuals for complete procedures. 
-                    This assistant is for reference only and does not replace official maintenance documentation.
-                </p>
-            </div>
-            
-            <div class="footer-section">
-                <p class="footer-safety">
-                    <span class="safety-icon">⚠️</span>
-                    Always follow proper safety procedures and notify unit maintenance for any issues beyond operator level.
-                </p>
-            </div>
-            
-            <div class="footer-section">
-                <p class="footer-compliance">
-                    Ensure compliance with AR 750-1, AR 385-55, and local unit SOPs for vehicle operations and maintenance.
-                </p>
-            </div>
-            
-            <div class="footer-bottom">
-                <p class="footer-version">PMCS Assistant v1.0.0 | For U.S. Army HMMWV Fleet</p>
-                <p class="footer-update">Data accurate as of January 2025</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <p class="footer-reference">
+                        <strong>Reference:</strong>
+                        <a href="https://www.nsndepot.com/Files/library/TM/HMMWV/TM-9-2320-280-10/TM-9-2320-280-10.pdf"
+                            target="_blank" rel="noopener noreferrer" class="footer-link">TM 9-2320-280-10</a>
+                    </p>
+                    <p class="footer-disclaimer">
+                        <strong>IMPORTANT:</strong> Use official technical manuals for complete procedures.
+                        This assistant is for reference only and does not replace official maintenance documentation.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <p class="footer-safety">
+                        <span class="safety-icon">⚠️</span>
+                        Always follow proper safety procedures and notify unit maintenance for any issues beyond
+                        operator level.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <p class="footer-compliance">
+                        Ensure compliance with AR 750-1, AR 385-55, and local unit SOPs for vehicle operations and
+                        maintenance.
+                    </p>
+                </div>
+
+                <div class="footer-bottom">
+                    <p class="footer-version">PMCS Assistant v1.0.0 | For U.S. Army HMMWV Fleet</p>
+                    <p class="footer-update">Data accurate as of January 2025</p>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="script.js"></script>
 </body>
